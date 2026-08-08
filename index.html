@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=5">
+<link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
 
@@ -180,7 +180,7 @@
       <!-- سير الليلة -->
       <div class="play-card play-card-wide night-card">
         <h3 class="play-title">سير الليلة</h3>
-        <p class="play-hint">أربع جولات... تتجمع النقاط، والفريق الأعلى يفوز بالختام.</p>
+        <p class="play-hint">خمس جولات... تتجمع النقاط، والفريق الأعلى يفوز بالختام.</p>
         <div class="night-rounds" id="nightRounds"></div>
         <div class="night-total">
           <div class="night-team night-sakara"><span>السكارى</span><strong id="nightSakara">0</strong></div>
@@ -236,6 +236,24 @@
           <button class="btn btn-ghost wheel-pick pick-masateel" onclick="pickWheelTeam('masateel')">المساطيل</button>
         </div>
         <div class="wheel-result" id="wheelResult">أدر العجلة واكتشف نصيبك</div>
+        <div class="widget-lock"><span>غير متاحة في هذه الجولة</span></div>
+      </div>
+
+      <!-- تحديات فالون -->
+      <div class="play-card play-card-wide round-widget" data-widget="games">
+        <h3 class="play-title">تحديات فالون</h3>
+        <p class="play-hint">ألعاب حية مستوحاة من The Tonight Show... اضغط التحدي واقرأ التعليمات.</p>
+        <div class="games-grid" id="gamesList"></div>
+        <div class="games-detail" id="gamesDetail" hidden>
+          <div class="games-detail-title" id="gamesDetailTitle"></div>
+          <div class="games-detail-how" id="gamesDetailHow"></div>
+          <div class="games-detail-win">
+            <span>من فاز بالتحدي؟</span>
+            <button class="games-win-btn win-sakara" onclick="gamesWin('sakara')">+10 للسكارى</button>
+            <button class="games-win-btn win-masateel" onclick="gamesWin('masateel')">+10 للمساطيل</button>
+            <button class="games-win-btn" onclick="closeGamesDetail()">إغلاق</button>
+          </div>
+        </div>
         <div class="widget-lock"><span>غير متاحة في هذه الجولة</span></div>
       </div>
 
@@ -314,8 +332,8 @@
   </div>
 </footer>
 
-<script src="script.js?v=5"></script>
+<script src="script.js?v=6"></script>
 <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
-<script src="online.js?v=5"></script>
+<script src="online.js?v=6"></script>
 </body>
 </html>

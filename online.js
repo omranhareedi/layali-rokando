@@ -21,6 +21,9 @@ window.online = (function(){
   let buzzCountP = null;
   let initTimer = null;
   let hostStateTimer = null;
+  let hostBeatTimer = null;
+  let probeTimer = null;
+  let joined = false;
 
   const $ = (id)=>document.getElementById(id);
   const overlay = ()=>$("onlineOverlay");
@@ -178,7 +181,8 @@ window.online = (function(){
     channel.attach();
     ably.connection.on("failed", ()=>abortReconnect("تعذر الاتصال بالخادم — تحقق من الإنترنت"));
     ably.connection.on("closed", ()=>abortReconnect("انقطع الاتصال بالخادم"));
-    channel.presence.enter({ role:"host", name:"المنسق", team:null, id:myId });
+    const pEnter = channel.presence.enter({ role:"host", name:"المنسق", team:null, id:myId });
+    if(pEnter && pEnter.catch) pEnter.catch(()=>{});
     channel.subscribe("msg", m=>hostOnMsg(m.data));
     channel.presence.subscribe(["enter","update","leave"], m=>{
       const d = m.member && m.member.data ? m.member.data : null;
@@ -190,6 +194,8 @@ window.online = (function(){
       renderHostPlayers();
       scheduleInit();
     });
+    if(hostBeatTimer) clearInterval(hostBeatTimer);
+    hostBeatTimer = setInterval(()=>{ publish({type:"beat", t:Date.now()}); }, 2500);
     overlay().classList.add("hidden");
     document.body.classList.add("online-host");
     showHostBar();
@@ -202,10 +208,19 @@ window.online = (function(){
 
   function hostOnMsg(msg){
     switch(msg.type){
+      case "probe": hostProbe(msg); break;
       case "playerAnswer": hostPlayerAnswer(msg); break;
       case "buzzPress": hostBuzzPress(msg); break;
       case "buzzAnswer": hostBuzzAnswer(msg); break;
     }
+  }
+
+  function hostProbe(msg){
+    if(!msg.id) return;
+    players[msg.id] = { name:msg.name || "لاعب", team:msg.team };
+    renderHostPlayers();
+    scheduleInit();
+    publish({ type:"pong" });
   }
 
   function scheduleInit(){
@@ -246,24 +261,26 @@ window.online = (function(){
   /* ---------- رسائل اللاعبين للمنسق ---------- */
   function hostPlayerAnswer(msg){
     if(!window.quizBusy()) return;
+    const item = window.currentQuiz();
+    if(!item || item.qid !== msg.qid) return;
     window.clearQuizTimer();
-    const item = window.quizItem(msg.ci, msg.li);
-    const res = window.evalQuiz(msg.ci, msg.li, msg.index, msg.value);
-    addPoints(msg.team, res.gained);
+    const correct = msg.index === item.correct;
+    const gained = correct ? msg.value : -Math.floor(msg.value/2);
+    addPoints(msg.team, gained);
     const btns = document.querySelectorAll(".quiz-answer");
     btns.forEach(b=>{ b.disabled = true; b.onclick = null; });
-    btns[res.correctIndex].classList.add("correct");
-    if(!res.correct) btns[msg.index].classList.add("wrong");
-    const fb = res.correct
+    btns[item.correct].classList.add("correct");
+    if(!correct) btns[msg.index].classList.add("wrong");
+    const fb = correct
       ? `${msg.name} أجاب صحيحاً! +${msg.value} لفريق ${teamName(msg.team)}.`
-      : `${msg.name} أجاب خطأً! -${Math.floor(msg.value/2)}. الصحيحة: ${item.options[res.correctIndex]}`;
+      : `${msg.name} أجاب خطأً! -${Math.floor(msg.value/2)}. الصحيحة: ${item.options[item.correct]}`;
     $("quizFeedback").textContent = fb;
     document.querySelectorAll(".team-pick").forEach(b=>b.classList.remove("lock"));
     const bar = $("quizTimerBar");
     bar.style.transition = "none"; bar.style.width = "100%";
     $("quizTimerNum").classList.remove("danger");
     $("quizTimerNum").textContent = window.QUIZ_TIME;
-    publish({type:"quiz", action:"result", question:item.q, options:item.options, index:msg.index, correctIndex:res.correctIndex, correct:res.correct, gained:res.gained, feedback:fb});
+    publish({type:"quiz", action:"result", question:item.q, options:item.options, index:msg.index, correctIndex:item.correct, correct, gained, feedback:fb});
   }
 
   function hostBuzzPress(msg){
@@ -321,22 +338,29 @@ window.online = (function(){
     channel.attach((err)=>{
       if(!ably || !channel) return;
       if(err){ show("تعذر الاتصال بالغرفة — تأكد من الكود"); teardown(); return; }
-      channel.presence.get((perr, members)=>{
+      channel.subscribe("msg", m=>{
         if(!ably || !channel) return;
-        const list = perr ? [] : (members || []);
-        const hasHost = list.some(m=> m.data && m.data.role === "host");
-        if(!hasHost){
-          show("الغرفة غير موجودة! تأكد من كود الغرفة الذي أرسله المنسق.");
-          teardown();
-          return;
+        const d = m.data;
+        if(!joined && d && (d.type === "beat" || d.type === "init" || d.type === "pong")){
+          if(probeTimer){ clearTimeout(probeTimer); probeTimer = null; }
+          finishPlayerJoin();
         }
-        finishPlayerJoin();
+        playerOnMsg(d);
       });
+      publish({ type:"probe", name, team, id:myId });
+      probeTimer = setTimeout(()=>{
+        if(!ably || !channel || joined) return;
+        show("الغرفة غير موجودة! تأكد من كود الغرفة الذي أرسله المنسق.");
+        teardown();
+      }, 8000);
     });
   }
   function finishPlayerJoin(){
-    channel.presence.enter({ role:"player", name, team, id:myId });
-    channel.subscribe("msg", m=>playerOnMsg(m.data));
+    if(joined) return;
+    joined = true;
+    if(probeTimer){ clearTimeout(probeTimer); probeTimer = null; }
+    const pEnter = channel.presence.enter({ role:"player", name, team, id:myId });
+    if(pEnter && pEnter.catch) pEnter.catch(()=>{});
     overlay().classList.add("hidden");
     document.body.classList.add("player-mode");
     $("pRoom").textContent = code;
@@ -367,7 +391,7 @@ window.online = (function(){
 
   function applyNight(msg){
     $("pRound").textContent = msg.on
-      ? `الجولة ${msg.round+1}/4: ${msg.roundName}`
+      ? `الجولة ${msg.round+1}/5: ${msg.roundName}`
       : "بانتظار بدء الليلة...";
     if(!msg.on){
       if(quizCountP){ clearInterval(quizCountP); quizCountP = null; }
@@ -392,7 +416,7 @@ window.online = (function(){
     if(quizCountP){ clearInterval(quizCountP); quizCountP = null; }
     quizStateP = null;
     if(msg.action === "ask"){
-      quizStateP = { ci:msg.ci, li:msg.li, value:msg.value, team:msg.team, answered:false };
+      quizStateP = { qid:msg.qid, correct:msg.correct, value:msg.value, team:msg.team, question:msg.question, options:msg.options, answered:false };
       if(msg.team === team){
         area.innerHTML = pgBox(`
           <div class="pg-timer" id="pgTimer">${msg.time}</div>
@@ -425,16 +449,16 @@ window.online = (function(){
     if(!q || q.answered) return;
     q.answered = true;
     if(quizCountP){ clearInterval(quizCountP); quizCountP = null; }
-    const item = window.quizItem(q.ci, q.li);
-    const res = window.evalQuiz(q.ci, q.li, i, q.value);
-    localAddPoints(res.gained);
-    publish({ type:"playerAnswer", ci:q.ci, li:q.li, index:i, value:q.value, name, team });
-    const fb = res.correct
+    const correct = i === q.correct;
+    const gained = correct ? q.value : -Math.floor(q.value/2);
+    localAddPoints(gained);
+    publish({ type:"playerAnswer", qid:q.qid, index:i, value:q.value, name, team });
+    const fb = correct
       ? `إجابة صحيحة! +${q.value} نقطة`
-      : `إجابة خاطئة! -${Math.floor(q.value/2)} نقطة. الصحيحة: ${item.options[res.correctIndex]}`;
+      : `إجابة خاطئة! -${Math.floor(q.value/2)} نقطة. الصحيحة: ${q.options[q.correct]}`;
     $("pGame").innerHTML = pgBox(`
-      <div class="pg-q">${item.question}</div>
-      ${item.options.map((o,idx)=>`<button class="pg-opt ${idx===res.correctIndex?"correct":""} ${!res.correct && idx===i?"wrong":""}" disabled>${o}</button>`).join("")}
+      <div class="pg-q">${q.question}</div>
+      ${q.options.map((o,idx)=>`<button class="pg-opt ${idx===q.correct?"correct":""} ${!correct && idx===i?"wrong":""}" disabled>${o}</button>`).join("")}
       <div class="pg-feedback">${fb}</div>`);
   }
 
@@ -526,6 +550,8 @@ window.online = (function(){
     if(quizCountP){ clearInterval(quizCountP); quizCountP = null; }
     if(buzzCountP){ clearInterval(buzzCountP); buzzCountP = null; }
     if(hostStateTimer){ clearInterval(hostStateTimer); hostStateTimer = null; }
+    if(probeTimer){ clearTimeout(probeTimer); probeTimer = null; }
+    joined = false;
     const oldAbly = ably;
     ably = null;
     if(channel){
