@@ -1,17 +1,17 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ليالي روقاندو | برنامج مسابقات وترفيه</title>
+<title>Ù„ÙŠØ§Ù„ÙŠ Ø±ÙˆÙ‚Ø§Ù†Ø¯Ùˆ | Ø¨Ø±Ù†Ø§Ù…Ø¬ Ù…Ø³Ø§Ø¨Ù‚Ø§Øª ÙˆØªØ±ÙÙŠÙ‡</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
 
-<!-- ====== طبقة سريالية خلفية ====== -->
+<!-- ====== Ø·Ø¨Ù‚Ø© Ø³Ø±ÙŠØ§Ù„ÙŠØ© Ø®Ù„ÙÙŠØ© ====== -->
 <div class="surreal-fixed">
   <div class="moon fx-moon"></div>
   <div class="surreal-eye fe-1"></div>
@@ -22,41 +22,41 @@
   <div class="spiral fx-spiral"></div>
 </div>
 
-<!-- ====== وضع الأونلاين ====== -->
+<!-- ====== ÙˆØ¶Ø¹ Ø§Ù„Ø£ÙˆÙ†Ù„Ø§ÙŠÙ† ====== -->
 <div class="online-overlay" id="onlineOverlay"></div>
 <div id="playerView" hidden>
   <header class="player-top">
     <div class="player-room" id="pRoom"></div>
     <div class="player-team-badge" id="pTeam"></div>
     <div class="player-name" id="pName"></div>
-    <button class="player-leave" onclick="online.disconnect()">خروج</button>
+    <button class="player-leave" onclick="online.disconnect()">Ø®Ø±ÙˆØ¬</button>
     <div class="player-dot"></div>
   </header>
   <div class="player-main">
-    <div class="player-round" id="pRound">بانتظار بدء الليلة...</div>
+    <div class="player-round" id="pRound">Ø¨Ø§Ù†ØªØ¸Ø§Ø± Ø¨Ø¯Ø¡ Ø§Ù„Ù„ÙŠÙ„Ø©...</div>
     <div class="player-scoreboard">
-      <div class="p-score p-sakara"><span>السكارى</span><strong id="pSakara">0</strong></div>
-      <div class="p-score p-masateel"><span>المساطيل</span><strong id="pMasateel">0</strong></div>
+      <div class="p-score p-sakara"><span>Ø§Ù„Ø³ÙƒØ§Ø±Ù‰</span><strong id="pSakara">0</strong></div>
+      <div class="p-score p-masateel"><span>Ø§Ù„Ù…Ø³Ø§Ø·ÙŠÙ„</span><strong id="pMasateel">0</strong></div>
     </div>
     <div class="player-game" id="pGame"></div>
   </div>
 </div>
 
-<!-- ====== شريط التنقل ====== -->
+<!-- ====== Ø´Ø±ÙŠØ· Ø§Ù„ØªÙ†Ù‚Ù„ ====== -->
 <header class="navbar" id="navbar">
   <div class="nav-inner">
-    <a href="#hero" class="brand"><span class="brand-mark">LR</span> ليالي روقاندو</a>
-    <button class="nav-toggle" id="navToggle" aria-label="القائمة">☰</button>
+    <a href="#hero" class="brand"><span class="brand-mark">LR</span> Ù„ÙŠØ§Ù„ÙŠ Ø±ÙˆÙ‚Ø§Ù†Ø¯Ùˆ</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Ø§Ù„Ù‚Ø§Ø¦Ù…Ø©">â˜°</button>
     <nav class="nav-links" id="navLinks">
-      <a href="#about">عن البرنامج</a>
-      <a href="#teams">الفريقان</a>
-      <a href="#games">الألعاب</a>
-      <a href="#play">العب الآن</a>
+      <a href="#about">Ø¹Ù† Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬</a>
+      <a href="#teams">Ø§Ù„ÙØ±ÙŠÙ‚Ø§Ù†</a>
+      <a href="#games">Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨</a>
+      <a href="#play">Ø§Ù„Ø¹Ø¨ Ø§Ù„Ø¢Ù†</a>
     </nav>
   </div>
 </header>
 
-<!-- ====== البداية ====== -->
+<!-- ====== Ø§Ù„Ø¨Ø¯Ø§ÙŠØ© ====== -->
 <section class="hero" id="hero">
   <div class="hero-bg">
     <div class="moon"></div>
@@ -73,133 +73,133 @@
     <div class="checker"></div>
   </div>
   <div class="hero-inner">
-    <div class="hero-badge">السبت الممتاز</div>
+    <div class="hero-badge">Ø§Ù„Ø³Ø¨Øª Ø§Ù„Ù…Ù…ØªØ§Ø²</div>
     <h1 class="hero-title">
-      <span class="line1">ليالي</span>
-      <span class="line2">روقانـدو</span>
+      <span class="line1">Ù„ÙŠØ§Ù„ÙŠ</span>
+      <span class="line2">Ø±ÙˆÙ‚Ø§Ù†Ù€Ø¯Ùˆ</span>
     </h1>
-    <p class="hero-tagline">السنجا في البنجا والهماهم اللكوري كربشا</p>
+    <p class="hero-tagline">Ø§Ù„Ø³Ù†Ø¬Ø§ ÙÙŠ Ø§Ù„Ø¨Ù†Ø¬Ø§ ÙˆØ§Ù„Ù‡Ù…Ø§Ù‡Ù… Ø§Ù„Ù„ÙƒÙˆØ±ÙŠ ÙƒØ±Ø¨Ø´Ø§</p>
     <div class="hero-actions">
-      <a href="#play" class="btn btn-gold">العب الآن</a>
-      <a href="#games" class="btn btn-ghost">استعرض الألعاب</a>
+      <a href="#play" class="btn btn-gold">Ø§Ù„Ø¹Ø¨ Ø§Ù„Ø¢Ù†</a>
+      <a href="#games" class="btn btn-ghost">Ø§Ø³ØªØ¹Ø±Ø¶ Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨</a>
     </div>
     <div class="hero-vs">
-      <div class="team-chip chip-sakara">فريق السكارى</div>
-      <div class="vs-badge">ضد</div>
-      <div class="team-chip chip-masateel">فريق المساطيل</div>
+      <div class="team-chip chip-sakara">ÙØ±ÙŠÙ‚ Ø§Ù„Ø³ÙƒØ§Ø±Ù‰</div>
+      <div class="vs-badge">Ø¶Ø¯</div>
+      <div class="team-chip chip-masateel">ÙØ±ÙŠÙ‚ Ø§Ù„Ù…Ø³Ø§Ø·ÙŠÙ„</div>
     </div>
   </div>
 </section>
 
-<!-- ====== عن البرنامج ====== -->
+<!-- ====== Ø¹Ù† Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬ ====== -->
 <section class="section" id="about">
   <div class="container">
-    <h2 class="section-title">ما هي <span class="gold">ليالي روقاندو</span>؟</h2>
-    <p class="section-lead">سهرة ترفيهية تجمع بين المسابقات والكوميديا... فريقان يتنافسان على الجائزة الكبرى عبر طريق من الألعاب الممتعة.</p>
+    <h2 class="section-title">Ù…Ø§ Ù‡ÙŠ <span class="gold">Ù„ÙŠØ§Ù„ÙŠ Ø±ÙˆÙ‚Ø§Ù†Ø¯Ùˆ</span>ØŸ</h2>
+    <p class="section-lead">Ø³Ù‡Ø±Ø© ØªØ±ÙÙŠÙ‡ÙŠØ© ØªØ¬Ù…Ø¹ Ø¨ÙŠÙ† Ø§Ù„Ù…Ø³Ø§Ø¨Ù‚Ø§Øª ÙˆØ§Ù„ÙƒÙˆÙ…ÙŠØ¯ÙŠØ§... ÙØ±ÙŠÙ‚Ø§Ù† ÙŠØªÙ†Ø§ÙØ³Ø§Ù† Ø¹Ù„Ù‰ Ø§Ù„Ø¬Ø§Ø¦Ø²Ø© Ø§Ù„ÙƒØ¨Ø±Ù‰ Ø¹Ø¨Ø± Ø·Ø±ÙŠÙ‚ Ù…Ù† Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨ Ø§Ù„Ù…Ù…ØªØ¹Ø©.</p>
     <div class="cards-3">
       <div class="card">
-        <div class="card-icon icon-heart">♥</div>
-        <h3>فريقان يتنافسان</h3>
-        <p>فريق السكارى وفريق المساطيل يتواجهان طوال الحلقة.</p>
+        <div class="card-icon icon-heart">â™¥</div>
+        <h3>ÙØ±ÙŠÙ‚Ø§Ù† ÙŠØªÙ†Ø§ÙØ³Ø§Ù†</h3>
+        <p>ÙØ±ÙŠÙ‚ Ø§Ù„Ø³ÙƒØ§Ø±Ù‰ ÙˆÙØ±ÙŠÙ‚ Ø§Ù„Ù…Ø³Ø§Ø·ÙŠÙ„ ÙŠØªÙˆØ§Ø¬Ù‡Ø§Ù† Ø·ÙˆØ§Ù„ Ø§Ù„Ø­Ù„Ù‚Ø©.</p>
       </div>
       <div class="card">
-        <div class="card-icon icon-star">★</div>
-        <h3>ألعاب متنوعة</h3>
-        <p>أسئلة وتحديات وتمثيل وغناء... لكل حلقة طعم جديد.</p>
+        <div class="card-icon icon-star">â˜…</div>
+        <h3>Ø£Ù„Ø¹Ø§Ø¨ Ù…ØªÙ†ÙˆØ¹Ø©</h3>
+        <p>Ø£Ø³Ø¦Ù„Ø© ÙˆØªØ­Ø¯ÙŠØ§Øª ÙˆØªÙ…Ø«ÙŠÙ„ ÙˆØºÙ†Ø§Ø¡... Ù„ÙƒÙ„ Ø­Ù„Ù‚Ø© Ø·Ø¹Ù… Ø¬Ø¯ÙŠØ¯.</p>
       </div>
       <div class="card">
-        <div class="card-icon icon-cup">◆</div>
-        <h3>الجمهور يقرر</h3>
-        <p>الجمهور يحكّم ويشارك ويختار بطل الليلة.</p>
+        <div class="card-icon icon-cup">â—†</div>
+        <h3>Ø§Ù„Ø¬Ù…Ù‡ÙˆØ± ÙŠÙ‚Ø±Ø±</h3>
+        <p>Ø§Ù„Ø¬Ù…Ù‡ÙˆØ± ÙŠØ­ÙƒÙ‘Ù… ÙˆÙŠØ´Ø§Ø±Ùƒ ÙˆÙŠØ®ØªØ§Ø± Ø¨Ø·Ù„ Ø§Ù„Ù„ÙŠÙ„Ø©.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ====== الفريقان ====== -->
+<!-- ====== Ø§Ù„ÙØ±ÙŠÙ‚Ø§Ù† ====== -->
 <section class="section section-dark" id="teams">
   <div class="container">
-    <h2 class="section-title">الفريقان</h2>
-    <p class="section-lead">منافسة ودية... والفائز يحمل الكأس.</p>
+    <h2 class="section-title">Ø§Ù„ÙØ±ÙŠÙ‚Ø§Ù†</h2>
+    <p class="section-lead">Ù…Ù†Ø§ÙØ³Ø© ÙˆØ¯ÙŠØ©... ÙˆØ§Ù„ÙØ§Ø¦Ø² ÙŠØ­Ù…Ù„ Ø§Ù„ÙƒØ£Ø³.</p>
     <div class="teams-grid">
       <div class="team-card team-sakara">
         <div class="team-stripe"></div>
-        <div class="team-name">فريق <span class="big">السكارى</span></div>
-        <div class="team-sub">طاقة وحماس بلا حدود</div>
+        <div class="team-name">ÙØ±ÙŠÙ‚ <span class="big">Ø§Ù„Ø³ÙƒØ§Ø±Ù‰</span></div>
+        <div class="team-sub">Ø·Ø§Ù‚Ø© ÙˆØ­Ù…Ø§Ø³ Ø¨Ù„Ø§ Ø­Ø¯ÙˆØ¯</div>
         <ul class="team-features">
-          <li>يخاطرون بجرأة</li>
-          <li>يجيبون بسرعة قبل التفكير</li>
-          <li>ضحكهم يملأ الاستوديو</li>
+          <li>ÙŠØ®Ø§Ø·Ø±ÙˆÙ† Ø¨Ø¬Ø±Ø£Ø©</li>
+          <li>ÙŠØ¬ÙŠØ¨ÙˆÙ† Ø¨Ø³Ø±Ø¹Ø© Ù‚Ø¨Ù„ Ø§Ù„ØªÙÙƒÙŠØ±</li>
+          <li>Ø¶Ø­ÙƒÙ‡Ù… ÙŠÙ…Ù„Ø£ Ø§Ù„Ø§Ø³ØªÙˆØ¯ÙŠÙˆ</li>
         </ul>
-        <div class="team-motto">الحماس يسبق التفكير... ويفوز في النهاية.</div>
+        <div class="team-motto">Ø§Ù„Ø­Ù…Ø§Ø³ ÙŠØ³Ø¨Ù‚ Ø§Ù„ØªÙÙƒÙŠØ±... ÙˆÙŠÙÙˆØ² ÙÙŠ Ø§Ù„Ù†Ù‡Ø§ÙŠØ©.</div>
       </div>
       <div class="vs-center">
         <div class="vs-ring">VS</div>
       </div>
       <div class="team-card team-masateel">
         <div class="team-stripe"></div>
-        <div class="team-name">فريق <span class="big">المساطيل</span></div>
-        <div class="team-sub">هدوء وذكاء محسوب</div>
+        <div class="team-name">ÙØ±ÙŠÙ‚ <span class="big">Ø§Ù„Ù…Ø³Ø§Ø·ÙŠÙ„</span></div>
+        <div class="team-sub">Ù‡Ø¯ÙˆØ¡ ÙˆØ°ÙƒØ§Ø¡ Ù…Ø­Ø³ÙˆØ¨</div>
         <ul class="team-features">
-          <li>يحسبون قبل الإجابة</li>
-          <li>يتأخرون قليلاً ثم يفاجئون</li>
-          <li>برودهم يربك المنافسين</li>
+          <li>ÙŠØ­Ø³Ø¨ÙˆÙ† Ù‚Ø¨Ù„ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø©</li>
+          <li>ÙŠØªØ£Ø®Ø±ÙˆÙ† Ù‚Ù„ÙŠÙ„Ø§Ù‹ Ø«Ù… ÙŠÙØ§Ø¬Ø¦ÙˆÙ†</li>
+          <li>Ø¨Ø±ÙˆØ¯Ù‡Ù… ÙŠØ±Ø¨Ùƒ Ø§Ù„Ù…Ù†Ø§ÙØ³ÙŠÙ†</li>
         </ul>
-        <div class="team-motto">الهدوء قبل العاصفة... والنتيجة حاسمة.</div>
+        <div class="team-motto">Ø§Ù„Ù‡Ø¯ÙˆØ¡ Ù‚Ø¨Ù„ Ø§Ù„Ø¹Ø§ØµÙØ©... ÙˆØ§Ù„Ù†ØªÙŠØ¬Ø© Ø­Ø§Ø³Ù…Ø©.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ====== الألعاب ====== -->
+<!-- ====== Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨ ====== -->
 <section class="section" id="games">
   <div class="container">
-    <h2 class="section-title">بنك الألعاب</h2>
-    <p class="section-lead">تصفح الفئات واختر ما يناسب حلقاتك.</p>
+    <h2 class="section-title">Ø¨Ù†Ùƒ Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨</h2>
+    <p class="section-lead">ØªØµÙØ­ Ø§Ù„ÙØ¦Ø§Øª ÙˆØ§Ø®ØªØ± Ù…Ø§ ÙŠÙ†Ø§Ø³Ø¨ Ø­Ù„Ù‚Ø§ØªÙƒ.</p>
     <div class="cat-grid" id="catGrid"></div>
-    <p class="section-note">نصيحة: وازن بين ألعاب العقل والجسد والضحك في كل حلقة.</p>
+    <p class="section-note">Ù†ØµÙŠØ­Ø©: ÙˆØ§Ø²Ù† Ø¨ÙŠÙ† Ø£Ù„Ø¹Ø§Ø¨ Ø§Ù„Ø¹Ù‚Ù„ ÙˆØ§Ù„Ø¬Ø³Ø¯ ÙˆØ§Ù„Ø¶Ø­Ùƒ ÙÙŠ ÙƒÙ„ Ø­Ù„Ù‚Ø©.</p>
   </div>
 </section>
 
-<!-- ====== اللعب ====== -->
+<!-- ====== Ø§Ù„Ù„Ø¹Ø¨ ====== -->
 <section class="section" id="play">
   <div class="container">
-    <h2 class="section-title">العب الآن</h2>
-    <p class="section-lead">لوحة نقاط، عجلة حظ، أسئلة، ومعركة سرعة... ابدأ الليلة مباشرة.</p>
+    <h2 class="section-title">Ø§Ù„Ø¹Ø¨ Ø§Ù„Ø¢Ù†</h2>
+    <p class="section-lead">Ù„ÙˆØ­Ø© Ù†Ù‚Ø§Ø·ØŒ Ø¹Ø¬Ù„Ø© Ø­Ø¸ØŒ Ø£Ø³Ø¦Ù„Ø©ØŒ ÙˆÙ…Ø¹Ø±ÙƒØ© Ø³Ø±Ø¹Ø©... Ø§Ø¨Ø¯Ø£ Ø§Ù„Ù„ÙŠÙ„Ø© Ù…Ø¨Ø§Ø´Ø±Ø©.</p>
 
     <div class="online-bar" id="hostBar" hidden>
-      <div>الغرفة: <strong class="bar-room" id="hbRoom"></strong></div>
-      <button class="btn-mini plus" onclick="online.copyLink()">نسخ الرابط</button>
+      <div>Ø§Ù„ØºØ±ÙØ©: <strong class="bar-room" id="hbRoom"></strong></div>
+      <button class="btn-mini plus" onclick="online.copyLink()">Ù†Ø³Ø® Ø§Ù„Ø±Ø§Ø¨Ø·</button>
       <div class="bar-link" id="hbLink"></div>
       <div class="bar-players" id="hbPlayers"></div>
-      <button class="btn-mini minus" onclick="online.disconnect()">إنهاء</button>
+      <button class="btn-mini minus" onclick="online.disconnect()">Ø¥Ù†Ù‡Ø§Ø¡</button>
     </div>
 
     <div class="play-grid">
 
-      <!-- سير الليلة -->
+      <!-- Ø³ÙŠØ± Ø§Ù„Ù„ÙŠÙ„Ø© -->
       <div class="play-card play-card-wide night-card">
-        <h3 class="play-title">سير الليلة</h3>
-        <p class="play-hint">خمس جولات... تتجمع النقاط، والفريق الأعلى يفوز بالختام.</p>
+        <h3 class="play-title">Ø³ÙŠØ± Ø§Ù„Ù„ÙŠÙ„Ø©</h3>
+        <p class="play-hint">Ø®Ù…Ø³ Ø¬ÙˆÙ„Ø§Øª... ØªØªØ¬Ù…Ø¹ Ø§Ù„Ù†Ù‚Ø§Ø·ØŒ ÙˆØ§Ù„ÙØ±ÙŠÙ‚ Ø§Ù„Ø£Ø¹Ù„Ù‰ ÙŠÙÙˆØ² Ø¨Ø§Ù„Ø®ØªØ§Ù….</p>
         <div class="night-rounds" id="nightRounds"></div>
         <div class="night-total">
-          <div class="night-team night-sakara"><span>السكارى</span><strong id="nightSakara">0</strong></div>
-          <div class="night-vs">ضد</div>
-          <div class="night-team night-masateel"><span>المساطيل</span><strong id="nightMasateel">0</strong></div>
+          <div class="night-team night-sakara"><span>Ø§Ù„Ø³ÙƒØ§Ø±Ù‰</span><strong id="nightSakara">0</strong></div>
+          <div class="night-vs">Ø¶Ø¯</div>
+          <div class="night-team night-masateel"><span>Ø§Ù„Ù…Ø³Ø§Ø·ÙŠÙ„</span><strong id="nightMasateel">0</strong></div>
         </div>
         <div class="night-actions">
-          <button class="btn btn-gold" id="nightNextBtn" onclick="nextRound()">ابدأ الجولة الأولى</button>
-          <button class="btn btn-ghost" onclick="resetNight()">ليلة جديدة</button>
+          <button class="btn btn-gold" id="nightNextBtn" onclick="nextRound()">Ø§Ø¨Ø¯Ø£ Ø§Ù„Ø¬ÙˆÙ„Ø© Ø§Ù„Ø£ÙˆÙ„Ù‰</button>
+          <button class="btn btn-ghost" onclick="resetNight()">Ù„ÙŠÙ„Ø© Ø¬Ø¯ÙŠØ¯Ø©</button>
         </div>
-        <div class="night-status" id="nightStatus">استعدوا... ابدأوا الليلة!</div>
+        <div class="night-status" id="nightStatus">Ø§Ø³ØªØ¹Ø¯ÙˆØ§... Ø§Ø¨Ø¯Ø£ÙˆØ§ Ø§Ù„Ù„ÙŠÙ„Ø©!</div>
       </div>
 
-      <!-- لوحة النتائج -->
+      <!-- Ù„ÙˆØ­Ø© Ø§Ù„Ù†ØªØ§Ø¦Ø¬ -->
       <div class="play-card">
-        <h3 class="play-title">لوحة النتائج</h3>
+        <h3 class="play-title">Ù„ÙˆØ­Ø© Ø§Ù„Ù†ØªØ§Ø¦Ø¬</h3>
         <div class="scoreboard">
           <div class="score-team score-sakara">
-            <div class="score-name">السكارى</div>
+            <div class="score-name">Ø§Ù„Ø³ÙƒØ§Ø±Ù‰</div>
             <div class="score-num" id="scoreSakara">0</div>
             <div class="score-controls">
               <button class="btn-mini plus" onclick="addPoints('sakara',10)">+10</button>
@@ -209,7 +209,7 @@
           </div>
           <div class="score-vs">VS</div>
           <div class="score-team score-masateel">
-            <div class="score-name">المساطيل</div>
+            <div class="score-name">Ø§Ù„Ù…Ø³Ø§Ø·ÙŠÙ„</div>
             <div class="score-num" id="scoreMasateel">0</div>
             <div class="score-controls">
               <button class="btn-mini plus" onclick="addPoints('masateel',10)">+10</button>
@@ -218,53 +218,53 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-ghost btn-block" onclick="resetScore()">تصفير النتائج</button>
+        <button class="btn btn-ghost btn-block" onclick="resetScore()">ØªØµÙÙŠØ± Ø§Ù„Ù†ØªØ§Ø¦Ø¬</button>
       </div>
 
-      <!-- عجلة الحظ -->
+      <!-- Ø¹Ø¬Ù„Ø© Ø§Ù„Ø­Ø¸ -->
       <div class="play-card round-widget" data-widget="wheel">
-        <h3 class="play-title">عجلة الحظ</h3>
-        <p class="play-hint">اختر الفريق ثم أدر العجلة.</p>
+        <h3 class="play-title">Ø¹Ø¬Ù„Ø© Ø§Ù„Ø­Ø¸</h3>
+        <p class="play-hint">Ø§Ø®ØªØ± Ø§Ù„ÙØ±ÙŠÙ‚ Ø«Ù… Ø£Ø¯Ø± Ø§Ù„Ø¹Ø¬Ù„Ø©.</p>
         <canvas id="wheelCanvas" width="300" height="300"></canvas>
         <div class="wheel-actions">
-          <button class="btn btn-gold" id="spinBtn" onclick="spinWheel()">دوران</button>
-          <button class="btn btn-ghost" onclick="resetWheel()">إعادة</button>
+          <button class="btn btn-gold" id="spinBtn" onclick="spinWheel()">Ø¯ÙˆØ±Ø§Ù†</button>
+          <button class="btn btn-ghost" onclick="resetWheel()">Ø¥Ø¹Ø§Ø¯Ø©</button>
         </div>
         <div class="wheel-team-row">
-          <span class="quiz-team-label">لصالح أي فريق؟</span>
-          <button class="btn btn-ghost wheel-pick pick-sakara" onclick="pickWheelTeam('sakara')">السكارى</button>
-          <button class="btn btn-ghost wheel-pick pick-masateel" onclick="pickWheelTeam('masateel')">المساطيل</button>
+          <span class="quiz-team-label">Ù„ØµØ§Ù„Ø­ Ø£ÙŠ ÙØ±ÙŠÙ‚ØŸ</span>
+          <button class="btn btn-ghost wheel-pick pick-sakara" onclick="pickWheelTeam('sakara')">Ø§Ù„Ø³ÙƒØ§Ø±Ù‰</button>
+          <button class="btn btn-ghost wheel-pick pick-masateel" onclick="pickWheelTeam('masateel')">Ø§Ù„Ù…Ø³Ø§Ø·ÙŠÙ„</button>
         </div>
-        <div class="wheel-result" id="wheelResult">أدر العجلة واكتشف نصيبك</div>
-        <div class="widget-lock"><span>غير متاحة في هذه الجولة</span></div>
+        <div class="wheel-result" id="wheelResult">Ø£Ø¯Ø± Ø§Ù„Ø¹Ø¬Ù„Ø© ÙˆØ§ÙƒØªØ´Ù Ù†ØµÙŠØ¨Ùƒ</div>
+        <div class="widget-lock"><span>ØºÙŠØ± Ù…ØªØ§Ø­Ø© ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ø¬ÙˆÙ„Ø©</span></div>
       </div>
 
-      <!-- تحديات فالون -->
+      <!-- ØªØ­Ø¯ÙŠØ§Øª ÙØ§Ù„ÙˆÙ† -->
       <div class="play-card play-card-wide round-widget" data-widget="games">
-        <h3 class="play-title">تحديات فالون</h3>
-        <p class="play-hint">ألعاب حية مستوحاة من The Tonight Show... اضغط التحدي واقرأ التعليمات.</p>
+        <h3 class="play-title">ØªØ­Ø¯ÙŠØ§Øª ÙØ§Ù„ÙˆÙ†</h3>
+        <p class="play-hint">Ø£Ù„Ø¹Ø§Ø¨ Ø­ÙŠØ© Ù…Ø³ØªÙˆØ­Ø§Ø© Ù…Ù† The Tonight Show... Ø§Ø¶ØºØ· Ø§Ù„ØªØ­Ø¯ÙŠ ÙˆØ§Ù‚Ø±Ø£ Ø§Ù„ØªØ¹Ù„ÙŠÙ…Ø§Øª.</p>
         <div class="games-grid" id="gamesList"></div>
         <div class="games-detail" id="gamesDetail" hidden>
           <div class="games-detail-title" id="gamesDetailTitle"></div>
           <div class="games-detail-how" id="gamesDetailHow"></div>
           <div class="games-detail-win">
-            <span>من فاز بالتحدي؟</span>
-            <button class="games-win-btn win-sakara" onclick="gamesWin('sakara')">+10 للسكارى</button>
-            <button class="games-win-btn win-masateel" onclick="gamesWin('masateel')">+10 للمساطيل</button>
-            <button class="games-win-btn" onclick="closeGamesDetail()">إغلاق</button>
+            <span>Ù…Ù† ÙØ§Ø² Ø¨Ø§Ù„ØªØ­Ø¯ÙŠØŸ</span>
+            <button class="games-win-btn win-sakara" onclick="gamesWin('sakara')">+10 Ù„Ù„Ø³ÙƒØ§Ø±Ù‰</button>
+            <button class="games-win-btn win-masateel" onclick="gamesWin('masateel')">+10 Ù„Ù„Ù…Ø³Ø§Ø·ÙŠÙ„</button>
+            <button class="games-win-btn" onclick="closeGamesDetail()">Ø¥ØºÙ„Ø§Ù‚</button>
           </div>
         </div>
-        <div class="widget-lock"><span>غير متاحة في هذه الجولة</span></div>
+        <div class="widget-lock"><span>ØºÙŠØ± Ù…ØªØ§Ø­Ø© ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ø¬ÙˆÙ„Ø©</span></div>
       </div>
 
-      <!-- لوحة الأسئلة -->
+      <!-- Ù„ÙˆØ­Ø© Ø§Ù„Ø£Ø³Ø¦Ù„Ø© -->
       <div class="play-card play-card-wide round-widget" data-widget="quiz">
-        <h3 class="play-title">لوحة الأسئلة</h3>
-        <p class="play-hint">اختر فئة وقيمة السؤال... ثم أجب خلال 20 ثانية.</p>
+        <h3 class="play-title">Ù„ÙˆØ­Ø© Ø§Ù„Ø£Ø³Ø¦Ù„Ø©</h3>
+        <p class="play-hint">Ø§Ø®ØªØ± ÙØ¦Ø© ÙˆÙ‚ÙŠÙ…Ø© Ø§Ù„Ø³Ø¤Ø§Ù„... Ø«Ù… Ø£Ø¬Ø¨ Ø®Ù„Ø§Ù„ 20 Ø«Ø§Ù†ÙŠØ©.</p>
         <div class="quiz-team-row">
-          <span class="quiz-team-label">من يجيب الآن؟</span>
-          <button class="btn btn-ghost team-pick pick-sakara" onclick="pickQuizTeam('sakara')">فريق السكارى</button>
-          <button class="btn btn-ghost team-pick pick-masateel" onclick="pickQuizTeam('masateel')">فريق المساطيل</button>
+          <span class="quiz-team-label">Ù…Ù† ÙŠØ¬ÙŠØ¨ Ø§Ù„Ø¢Ù†ØŸ</span>
+          <button class="btn btn-ghost team-pick pick-sakara" onclick="pickQuizTeam('sakara')">ÙØ±ÙŠÙ‚ Ø§Ù„Ø³ÙƒØ§Ø±Ù‰</button>
+          <button class="btn btn-ghost team-pick pick-masateel" onclick="pickQuizTeam('masateel')">ÙØ±ÙŠÙ‚ Ø§Ù„Ù…Ø³Ø§Ø·ÙŠÙ„</button>
         </div>
         <div class="quiz-board" id="quizBoard"></div>
         <div class="quiz-timer-wrap">
@@ -272,50 +272,50 @@
           <span class="quiz-timer-num" id="quizTimerNum">20</span>
         </div>
         <div class="quiz-row">
-          <div class="quiz-question" id="quizQuestion">اختر فئة وقيمة ليظهر السؤال</div>
+          <div class="quiz-question" id="quizQuestion">Ø§Ø®ØªØ± ÙØ¦Ø© ÙˆÙ‚ÙŠÙ…Ø© Ù„ÙŠØ¸Ù‡Ø± Ø§Ù„Ø³Ø¤Ø§Ù„</div>
           <div class="quiz-answers" id="quizAnswers"></div>
         </div>
         <div class="quiz-actions">
-          <button class="btn btn-ghost" onclick="resetBoard()">تصفير اللوحة</button>
+          <button class="btn btn-ghost" onclick="resetBoard()">ØªØµÙÙŠØ± Ø§Ù„Ù„ÙˆØ­Ø©</button>
         </div>
         <div class="quiz-feedback" id="quizFeedback"></div>
-        <div class="widget-lock"><span>غير متاحة في هذه الجولة</span></div>
+        <div class="widget-lock"><span>ØºÙŠØ± Ù…ØªØ§Ø­Ø© ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ø¬ÙˆÙ„Ø©</span></div>
       </div>
 
-      <!-- معركة السرعة -->
+      <!-- Ù…Ø¹Ø±ÙƒØ© Ø§Ù„Ø³Ø±Ø¹Ø© -->
       <div class="play-card play-card-wide round-widget" data-widget="buzz">
-        <h3 class="play-title">معركة السرعة</h3>
-        <p class="play-hint">سؤال و10 ثوانٍ... من يضغط الزر أولاً يجيب.</p>
-        <div class="buzz-question" id="buzzQuestion">اضغط «ابدأ المعركة»</div>
+        <h3 class="play-title">Ù…Ø¹Ø±ÙƒØ© Ø§Ù„Ø³Ø±Ø¹Ø©</h3>
+        <p class="play-hint">Ø³Ø¤Ø§Ù„ Ùˆ10 Ø«ÙˆØ§Ù†Ù... Ù…Ù† ÙŠØ¶ØºØ· Ø§Ù„Ø²Ø± Ø£ÙˆÙ„Ø§Ù‹ ÙŠØ¬ÙŠØ¨.</p>
+        <div class="buzz-question" id="buzzQuestion">Ø§Ø¶ØºØ· Â«Ø§Ø¨Ø¯Ø£ Ø§Ù„Ù…Ø¹Ø±ÙƒØ©Â»</div>
         <div class="buzz-answers" id="buzzAnswers"></div>
         <div class="buzz-timer" id="buzzTimer">10</div>
         <div class="buzz-buzzers">
-          <button class="buzz-buzzer buzz-sakara" onclick="buzz('sakara')">السكارى</button>
-          <button class="buzz-buzzer buzz-masateel" onclick="buzz('masateel')">المساطيل</button>
+          <button class="buzz-buzzer buzz-sakara" onclick="buzz('sakara')">Ø§Ù„Ø³ÙƒØ§Ø±Ù‰</button>
+          <button class="buzz-buzzer buzz-masateel" onclick="buzz('masateel')">Ø§Ù„Ù…Ø³Ø§Ø·ÙŠÙ„</button>
         </div>
         <div class="quiz-actions">
-          <button class="btn btn-gold" onclick="startBuzz()">ابدأ المعركة</button>
+          <button class="btn btn-gold" onclick="startBuzz()">Ø§Ø¨Ø¯Ø£ Ø§Ù„Ù…Ø¹Ø±ÙƒØ©</button>
         </div>
         <div class="quiz-feedback" id="buzzFeedback"></div>
-        <div class="widget-lock"><span>غير متاحة في هذه الجولة</span></div>
+        <div class="widget-lock"><span>ØºÙŠØ± Ù…ØªØ§Ø­Ø© ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ø¬ÙˆÙ„Ø©</span></div>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- ====== ختام الليلة ====== -->
+<!-- ====== Ø®ØªØ§Ù… Ø§Ù„Ù„ÙŠÙ„Ø© ====== -->
 <div class="night-final" id="nightFinal">
   <div class="night-final-inner">
-    <div class="final-title">ختام الليلة</div>
+    <div class="final-title">Ø®ØªØ§Ù… Ø§Ù„Ù„ÙŠÙ„Ø©</div>
     <div class="final-winner" id="finalWinner"></div>
     <div class="final-score" id="finalScore"></div>
-    <p class="final-note">كأس ليالي روقاندو لفريق هذه الليلة.</p>
-    <button class="btn btn-gold" onclick="closeFinal(); resetNight();">ليلة جديدة</button>
+    <p class="final-note">ÙƒØ£Ø³ Ù„ÙŠØ§Ù„ÙŠ Ø±ÙˆÙ‚Ø§Ù†Ø¯Ùˆ Ù„ÙØ±ÙŠÙ‚ Ù‡Ø°Ù‡ Ø§Ù„Ù„ÙŠÙ„Ø©.</p>
+    <button class="btn btn-gold" onclick="closeFinal(); resetNight();">Ù„ÙŠÙ„Ø© Ø¬Ø¯ÙŠØ¯Ø©</button>
   </div>
 </div>
 
-<!-- ====== الفوتر ====== -->
+<!-- ====== Ø§Ù„ÙÙˆØªØ± ====== -->
 <footer class="footer">
   <div class="surreal-footer">
     <div class="moon foot-moon"></div>
@@ -323,17 +323,18 @@
     <div class="blob foot-blob"></div>
   </div>
   <div class="container">
-    <div class="footer-brand">ليالي روقاندو</div>
-    <p>كل ليلة حكاية.</p>
+    <div class="footer-brand">Ù„ÙŠØ§Ù„ÙŠ Ø±ÙˆÙ‚Ø§Ù†Ø¯Ùˆ</div>
+    <p>ÙƒÙ„ Ù„ÙŠÙ„Ø© Ø­ÙƒØ§ÙŠØ©.</p>
     <div class="footer-tags">
-      <span>مسابقات</span><span>كوميديا</span><span>ترفيه</span>
+      <span>Ù…Ø³Ø§Ø¨Ù‚Ø§Øª</span><span>ÙƒÙˆÙ…ÙŠØ¯ÙŠØ§</span><span>ØªØ±ÙÙŠÙ‡</span>
     </div>
-    <p class="footer-copy">موقع ترفيهي تابع ليالي روقاندو.</p>
+    <p class="footer-copy">Ù…ÙˆÙ‚Ø¹ ØªØ±ÙÙŠÙ‡ÙŠ ØªØ§Ø¨Ø¹ Ù„ÙŠØ§Ù„ÙŠ Ø±ÙˆÙ‚Ø§Ù†Ø¯Ùˆ.</p>
   </div>
 </footer>
 
-<script src="script.js?v=6"></script>
+<script src="script.js?v=7"></script>
 <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
-<script src="online.js?v=6"></script>
+<script src="online.js?v=7"></script>
 </body>
 </html>
+

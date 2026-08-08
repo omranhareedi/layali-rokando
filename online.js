@@ -1,6 +1,7 @@
 ﻿/* ====== ليالي روقاندو — الطبقة الأونلاين (Ably) ======
-   يُنصح بتقييد المفتاح (Capabilities) على Publish + Subscribe فقط. */
-const ABLY_KEY = "WEHAHQ.4vcZ6A:soqhyYsu6atIq0JcAHqNgjF5Dte_OqY2Y4L0LTF7ZXA";
+   المفتاح الحالي يعمل بصلاحيات Publish + Subscribe + Presence.
+   ملاحظة: مفتاح 4vcZ6A كان Subscribe فقط — لا يعمل للنشر (40160). */
+const ABLY_KEY = "WEHAHQ.bruQUA:vAIAvC_vW30OpzTdVNjArNMSC1zTTjdvdtvmw52o-10";
 const ROOM_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ";
 
 window.online = (function(){
