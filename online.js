@@ -17,6 +17,7 @@ window.online = (function(){
   let quizStateP = null;
   let quizCountP = null;
   let buzzStateP = { active:false, locked:null, pressed:false };
+  let buzzDataP = null;   /* {question, options, correct} */
   let buzzCountP = null;
   let initTimer = null;
 
@@ -33,6 +34,11 @@ window.online = (function(){
 
   function publish(msg){
     if(channel && ably) channel.publish("msg", msg);
+  }
+  function localAddPoints(gained){
+    const el = team==="sakara" ? $("pSakara") : $("pMasateel");
+    const cur = parseInt((el && el.textContent) || "0", 10);
+    if(el) el.textContent = Math.max(0, cur + gained);
   }
   function link(){
     return location.origin + location.pathname + "?room=" + code;
@@ -306,6 +312,7 @@ window.online = (function(){
       if(buzzCountP){ clearInterval(buzzCountP); buzzCountP = null; }
       quizStateP = null;
       buzzStateP = { active:false, locked:null, pressed:false };
+      buzzDataP = null;
       $("pGame").innerHTML = pgBox('<div class="pg-note">بانتظار تعليمات المنسق...</div>');
     }
   }
@@ -356,8 +363,17 @@ window.online = (function(){
     if(!q || q.answered) return;
     q.answered = true;
     if(quizCountP){ clearInterval(quizCountP); quizCountP = null; }
+    const item = window.quizItem(q.ci, q.li);
+    const res = window.evalQuiz(q.ci, q.li, i, q.value);
+    localAddPoints(res.gained);
     publish({ type:"playerAnswer", ci:q.ci, li:q.li, index:i, value:q.value, name, team });
-    $("pGame").innerHTML = pgBox('<div class="pg-note">انتظر النتيجة...</div>');
+    const fb = res.correct
+      ? `إجابة صحيحة! +${q.value} نقطة`
+      : `إجابة خاطئة! -${Math.floor(q.value/2)} نقطة. الصحيحة: ${item.options[res.correctIndex]}`;
+    $("pGame").innerHTML = pgBox(`
+      <div class="pg-q">${item.question}</div>
+      ${item.options.map((o,idx)=>`<button class="pg-opt ${idx===res.correctIndex?"correct":""} ${!res.correct && idx===i?"wrong":""}" disabled>${o}</button>`).join("")}
+      <div class="pg-feedback">${fb}</div>`);
   }
 
   /* ---------- معركة السرعة على الموبايل ---------- */
@@ -366,7 +382,8 @@ window.online = (function(){
     if(buzzCountP){ clearInterval(buzzCountP); buzzCountP = null; }
     buzzStateP = { active:false, locked:null, pressed:false };
     if(msg.action === "ask"){
-      buzzStateP = { active:true, locked:null, pressed:false, question:msg.question, options:msg.options };
+      buzzDataP = { question:msg.question, options:msg.options, correct:msg.correct };
+      buzzStateP = { active:true, locked:null, pressed:false };
       area.innerHTML = pgBox(`
         <div class="pg-q">${msg.question}</div>
         <button class="pg-buzz press-${team}" onclick="online.buzzP()">${teamName(team)}</button>
@@ -376,8 +393,8 @@ window.online = (function(){
       if(msg.name === name){
         area.innerHTML = pgBox(`
           <div class="pg-timer" id="pgTimer">10</div>
-          <div class="pg-q">${buzzStateP.question}</div>
-          ${buzzStateP.options.map((o,i)=>`<button class="pg-opt" onclick="online.answerB(${i})">${o}</button>`).join("")}
+          <div class="pg-q">${buzzDataP.question}</div>
+          ${buzzDataP.options.map((o,i)=>`<button class="pg-opt" onclick="online.answerB(${i})">${o}</button>`).join("")}
           <div class="pg-note">أنت الفائز بالبازر... أجب خلال 10 ثوانٍ</div>`);
         let left = 10;
         buzzCountP = setInterval(()=>{
@@ -388,7 +405,7 @@ window.online = (function(){
         },1000);
       }else{
         area.innerHTML = pgBox(`
-          <div class="pg-q">${buzzStateP.question}</div>
+          <div class="pg-q">${buzzDataP.question}</div>
           <div class="pg-note">${msg.name} من فريق ${teamName(msg.team)} فاز بالبازر... يجيب الآن</div>`);
       }
     }else if(msg.action === "result"){
@@ -409,10 +426,20 @@ window.online = (function(){
   }
   function answerB(i){
     const b = buzzStateP;
-    if(!b.active || b.locked !== name) return;
+    const bd = buzzDataP;
+    if(!b.active || b.locked !== name || !bd) return;
     if(buzzCountP){ clearInterval(buzzCountP); buzzCountP = null; }
+    const correct = i === bd.correct;
+    const gained = correct ? 20 : -10;
+    localAddPoints(gained);
     publish({ type:"buzzAnswer", index:i, name, team });
-    $("pGame").innerHTML = pgBox('<div class="pg-note">انتظر النتيجة...</div>');
+    const fb = correct
+      ? "إجابة صحيحة! +20 نقطة"
+      : `إجابة خاطئة! -10 نقاط. الصحيحة: ${bd.options[bd.correct]}`;
+    $("pGame").innerHTML = pgBox(`
+      <div class="pg-q">${bd.question}</div>
+      ${bd.options.map((o,idx)=>`<button class="pg-opt ${idx===bd.correct?"correct":""} ${!correct && idx===i?"wrong":""}" disabled>${o}</button>`).join("")}
+      <div class="pg-feedback">${fb}</div>`);
   }
 
   /* ---------- الختام على الموبايل ---------- */

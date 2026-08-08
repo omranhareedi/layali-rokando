@@ -613,7 +613,7 @@ function startBuzz(){
   document.querySelectorAll(".buzz-buzzer").forEach(b=>b.classList.remove("hit"));
   if(window.onlineHost && window.onlineHost.connected){
     document.getElementById("buzzFeedback").textContent = "بانتظار ضغطة البازر من اللاعبين...";
-    window.onlineHost.publishBuzz({action:"ask", question:item.q, options:item.options, time:BUZZ_TIME});
+    window.onlineHost.publishBuzz({action:"ask", question:item.q, options:item.options, correct:item.correct, time:BUZZ_TIME});
   }
 }
 function buzz(team){
