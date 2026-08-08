@@ -32,6 +32,23 @@ window.online = (function(){
     if(e) e.textContent = err || "";
   }
 
+  /* ---------- حفظ الجلسة (مقاومة الريفرش) ---------- */
+  const SKEY = "rokando_session";
+  function saveSession(){
+    try{ localStorage.setItem(SKEY, JSON.stringify({ role, code, name, team })); }catch(e){}
+  }
+  function clearSession(){
+    try{ localStorage.removeItem(SKEY); }catch(e){}
+  }
+  function loadSession(){
+    try{ return JSON.parse(localStorage.getItem(SKEY)) || null; }catch(e){ return null; }
+  }
+  function abortReconnect(err){
+    if(!ably) return;
+    teardown();
+    show(err);
+  }
+
   function publish(msg){
     if(channel && ably) channel.publish("msg", msg);
   }
@@ -56,11 +73,20 @@ window.online = (function(){
   function renderHome(){
     overlay().innerHTML = `
       <div class="oo-card">
-        <div class="oo-logo">ليالي روقاندو</div>
-        <div class="oo-sub">العبها مع فريقك أونلاين من أي موبايل</div>
-        <button class="oo-role" onclick="online.openHost()"><strong>منسق اللعبة</strong><small>يتحكم بالجولات والأسئلة والعجلة</small></button>
-        <button class="oo-role" onclick="online.openPlayer()"><strong>لاعب</strong><small>ينضم لفريق ويجيب من موبايله</small></button>
-        <button class="btn btn-ghost" onclick="online.enterLocal()">لعب محلي</button>
+        <div class="oo-head">
+          <div class="oo-moon"></div>
+          <div class="oo-logo">ليالي روقاندو</div>
+          <div class="oo-sub">العبها مع فريقك أونلاين من أي موبايل</div>
+        </div>
+        <button class="oo-role" onclick="online.openHost()">
+          <span class="oo-role-badge badge-gold">م</span>
+          <span class="oo-role-txt"><strong>منسق اللعبة</strong><small>يتحكم بالجولات والأسئلة والعجلة</small></span>
+        </button>
+        <button class="oo-role" onclick="online.openPlayer()">
+          <span class="oo-role-badge badge-pink">ل</span>
+          <span class="oo-role-txt"><strong>لاعب</strong><small>ينضم لفريق ويجيب من موبايله</small></span>
+        </button>
+        <button class="btn btn-ghost btn-block" onclick="online.enterLocal()">لعب محلي</button>
         <div class="oo-err" id="onlineErr"></div>
         ${ keyOk() && ablyLoaded() ? "" : '<div class="oo-link">ملاحظة: يحتاج مفتاح Ably — افتح online.js وأضف المفتاح في ABLY_KEY</div>' }
       </div>`;
@@ -68,8 +94,10 @@ window.online = (function(){
   function openHost(){
     overlay().innerHTML = `
       <div class="oo-card">
-        <div class="oo-logo">منسق اللعبة</div>
-        <div class="oo-sub">أنشئ غرفة وشارك الرابط مع الفريقين</div>
+        <div class="oo-head oo-head-sm">
+          <div class="oo-logo oo-logo-sm">منسق اللعبة</div>
+          <div class="oo-sub">أنشئ غرفة وشارك الرابط مع الفريقين</div>
+        </div>
         <input class="oo-field" id="ooRoom" placeholder="كود الغرفة (مثال: RQKD)" value="">
         <button class="btn btn-gold btn-block" onclick="online.startHost()">إنشاء الغرفة</button>
         <button class="btn btn-ghost btn-block" onclick="online.back()">رجوع</button>
@@ -81,8 +109,10 @@ window.online = (function(){
     const urlRoom = new URLSearchParams(location.search).get("room") || "";
     overlay().innerHTML = `
       <div class="oo-card">
-        <div class="oo-logo">لاعب</div>
-        <div class="oo-sub">انضم لفريقك وابدأ</div>
+        <div class="oo-head oo-head-sm">
+          <div class="oo-logo oo-logo-sm">لاعب</div>
+          <div class="oo-sub">انضم لفريقك وابدأ</div>
+        </div>
         <input class="oo-field" id="ooName" placeholder="اسمك">
         <input class="oo-field" id="ooRoom" placeholder="كود الغرفة" value="${urlRoom.toUpperCase()}">
         <div class="oo-team-row">
@@ -140,6 +170,8 @@ window.online = (function(){
     window.onlineHost = api;
     channel = ably.channels.get("room-" + c);
     channel.attach();
+    ably.connection.on("failed", ()=>abortReconnect("تعذر الاتصال بالخادم — تحقق من الإنترنت"));
+    ably.connection.on("closed", ()=>abortReconnect("انقطع الاتصال بالخادم"));
     channel.presence.enter({ role:"host", name:"المنسق", team:null, id:myId });
     channel.subscribe("msg", m=>hostOnMsg(m.data));
     channel.presence.subscribe(["enter","update","leave"], m=>{
@@ -155,6 +187,7 @@ window.online = (function(){
     overlay().classList.add("hidden");
     document.body.classList.add("online-host");
     showHostBar();
+    saveSession();
     setTimeout(publishInit, 400);
   }
 
@@ -267,23 +300,43 @@ window.online = (function(){
   }
   function connectPlayer(c, nm, tm){
     code = c; name = nm; team = tm;
+    if(!keyOk() || !ablyLoaded()){ show("المفتاح أو اتصال Ably غير جاهز — راجع online.js"); return; }
     try{
       ably = new Ably.Realtime({ key:ABLY_KEY, clientId:"p-"+c+"-"+Math.random().toString(36).slice(2,8) });
     }catch(e){ show("تعذر الاتصال: " + e.message); return; }
     myId = ably.auth.clientId;
     role = "player";
     channel = ably.channels.get("room-" + c);
-    channel.attach();
+    ably.connection.on("failed", ()=>abortReconnect("تعذر الاتصال بالخادم — تحقق من الإنترنت"));
+    ably.connection.on("closed", ()=>abortReconnect("انقطع الاتصال بالخادم"));
+    channel.attach((err)=>{
+      if(!ably || !channel) return;
+      if(err){ show("تعذر الاتصال بالغرفة — تأكد من الكود"); teardown(); return; }
+      channel.presence.get((perr, members)=>{
+        if(!ably || !channel) return;
+        const list = perr ? [] : (members || []);
+        const hasHost = list.some(m=> m.data && m.data.role === "host");
+        if(!hasHost){
+          show("الغرفة غير موجودة! تأكد من كود الغرفة الذي أرسله المنسق.");
+          teardown();
+          return;
+        }
+        finishPlayerJoin();
+      });
+    });
+  }
+  function finishPlayerJoin(){
     channel.presence.enter({ role:"player", name, team, id:myId });
     channel.subscribe("msg", m=>playerOnMsg(m.data));
     overlay().classList.add("hidden");
     document.body.classList.add("player-mode");
-    $("pRoom").textContent = c;
+    $("pRoom").textContent = code;
     $("pName").textContent = name;
     const badge = $("pTeam");
     badge.textContent = teamName(team);
     badge.className = "player-team-badge " + (team==="sakara" ? "t-sakara" : "t-masateel");
     $("pGame").innerHTML = pgBox('<div class="pg-note">بانتظار تعليمات المنسق...</div>');
+    saveSession();
   }
 
   function playerOnMsg(msg){
@@ -463,17 +516,21 @@ window.online = (function(){
   function teardown(){
     if(quizCountP){ clearInterval(quizCountP); quizCountP = null; }
     if(buzzCountP){ clearInterval(buzzCountP); buzzCountP = null; }
+    const oldAbly = ably;
+    ably = null;
     if(channel){
       try{ channel.presence.leave(); }catch(e){}
       try{ channel.unsubscribe(); }catch(e){}
     }
-    if(ably){ try{ ably.close(); }catch(e){} }
-    ably = null; channel = null; role = null;
+    channel = null;
+    if(oldAbly){ try{ oldAbly.close(); }catch(e){} }
+    role = null;
     window.onlineHost = null;
     document.body.classList.remove("online-host", "player-mode");
     const bar = $("hostBar");
     if(bar) bar.hidden = true;
     Object.keys(players).forEach(k=>delete players[k]);
+    clearSession();
     renderHome();
     overlay().classList.remove("hidden");
   }
@@ -483,8 +540,15 @@ window.online = (function(){
 
   /* ---------- تشغيل ---------- */
   function init(){
-    renderHome();
-    if(new URLSearchParams(location.search).get("room")) openPlayer();
+    const s = loadSession();
+    if(s && s.role === "player" && s.code){
+      connectPlayer(s.code, s.name || "", s.team || "sakara");
+    }else if(s && s.role === "host" && s.code){
+      connectHost(s.code);
+    }else{
+      renderHome();
+      if(new URLSearchParams(location.search).get("room")) openPlayer();
+    }
   }
 
   return {
