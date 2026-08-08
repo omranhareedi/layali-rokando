@@ -436,6 +436,69 @@ img{max-width:100%}
   .buzz-answers{grid-template-columns:1fr}
   .buzz-buzzer{flex:0 0 128px}
   .quiz-team-row,.wheel-team-row{gap:8px}
+  .hero{padding:60px 16px 48px}
+  .hero-vs{gap:10px}
+  .play-card{padding:20px 16px}
+  .team-card{padding:26px 20px}
+  .team-name .big{font-size:2.2rem}
+  .quiz-question{font-size:1.05rem;padding:18px}
+  .quiz-timer-num{min-width:40px}
+  .player-top{padding:10px 12px}
+  .online-bar{padding:10px 12px}
+  .bar-link{font-size:.72rem}
+  .night-chip{font-size:.78rem}
+}
+
+@media (max-width:480px){
+  .hero{min-height:auto;padding:52px 14px 38px}
+  .hero-badge{font-size:.78rem;padding:6px 14px;margin-bottom:16px}
+  .hero-title{font-size:clamp(2.5rem,15vw,3.6rem)}
+  .hero-tagline{font-size:.95rem;margin-bottom:22px}
+  .hero-actions{gap:10px}
+  .hero-actions .btn{width:100%;max-width:280px}
+  .team-chip{padding:10px 14px;font-size:.92rem}
+  .section{padding:46px 14px}
+  .section-title{font-size:1.55rem}
+  .section-lead{font-size:.98rem;margin-bottom:32px}
+  .section-note{font-size:.85rem}
+  .cards-3{gap:14px}
+  .card{padding:22px 16px}
+  .card h3{font-size:1.1rem}
+  .play-card{padding:18px 12px}
+  .play-title{font-size:1.15rem}
+  .play-hint{font-size:.85rem}
+  .score-team{padding:14px 8px}
+  .score-name{font-size:1rem}
+  .score-num{font-size:2.5rem}
+  .score-controls{gap:6px}
+  .night-team strong{font-size:1.7rem}
+  .night-team span{font-size:.8rem}
+  .quiz-question{font-size:1rem;min-height:110px;padding:16px}
+  .quiz-answer,.buzz-opt{padding:14px 10px;font-size:.9rem}
+  .quiz-cat-title{font-size:.78rem;padding:9px 4px}
+  .quiz-cell{font-size:.9rem;padding:11px 2px}
+  .quiz-timer-num{font-size:1.1rem;min-width:38px}
+  .buzz-question{font-size:1.05rem;padding:16px}
+  .buzz-buzzer{flex:1;padding:14px 8px;font-size:.95rem}
+  .btn{padding:12px 18px;font-size:.92rem}
+  .btn-mini{padding:8px 12px;font-size:.78rem}
+  .night-chip{padding:7px 10px;font-size:.74rem;gap:6px}
+  .night-actions{gap:8px}
+  .brand{font-size:1rem}
+  .brand-mark{width:34px;height:34px}
+  .oo-field{font-size:16px}
+  .bar-players{font-size:.78rem}
+  .pg-box{padding:18px 14px}
+  .pg-q{font-size:1.1rem}
+  .hero-bg .balloon,.hero-bg .door,.hero-bg .fish,.hero-bg .stair,.hero-bg .surreal-eye{display:none}
+  .hero-bg .moon{width:160px;height:160px;top:4%;right:4%}
+  .hero-bg .spiral{width:52px;height:52px;top:auto;bottom:10%;left:8%}
+  .surreal-fixed .fx-moon{width:80px;height:80px}
+  .surreal-fixed .fx-blob{width:150px;height:120px}
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
 }
 
 /* ====== عالم سريالي ====== */
