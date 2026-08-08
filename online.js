@@ -20,6 +20,7 @@ window.online = (function(){
   let buzzDataP = null;   /* {question, options, correct} */
   let buzzCountP = null;
   let initTimer = null;
+  let hostStateTimer = null;
 
   const $ = (id)=>document.getElementById(id);
   const overlay = ()=>$("onlineOverlay");
@@ -45,7 +46,12 @@ window.online = (function(){
   }
   function abortReconnect(err){
     if(!ably) return;
+    const saved = { role, code, name, team };
+    let hostState = null;
+    try{ hostState = localStorage.getItem("rokando_host_state"); }catch(e){}
     teardown();
+    try{ localStorage.setItem(SKEY, JSON.stringify(saved)); }catch(e){}
+    if(hostState) try{ localStorage.setItem("rokando_host_state", hostState); }catch(e){}
     show(err);
   }
 
@@ -187,7 +193,10 @@ window.online = (function(){
     overlay().classList.add("hidden");
     document.body.classList.add("online-host");
     showHostBar();
+    if(window.restoreHostState) window.restoreHostState();
     saveSession();
+    if(hostStateTimer) clearInterval(hostStateTimer);
+    hostStateTimer = setInterval(()=>{ if(window.saveHostState) window.saveHostState(); }, 3000);
     setTimeout(publishInit, 400);
   }
 
@@ -516,6 +525,7 @@ window.online = (function(){
   function teardown(){
     if(quizCountP){ clearInterval(quizCountP); quizCountP = null; }
     if(buzzCountP){ clearInterval(buzzCountP); buzzCountP = null; }
+    if(hostStateTimer){ clearInterval(hostStateTimer); hostStateTimer = null; }
     const oldAbly = ably;
     ably = null;
     if(channel){
@@ -531,6 +541,7 @@ window.online = (function(){
     if(bar) bar.hidden = true;
     Object.keys(players).forEach(k=>delete players[k]);
     clearSession();
+    if(window.clearHostState) window.clearHostState();
     renderHome();
     overlay().classList.remove("hidden");
   }

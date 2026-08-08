@@ -697,3 +697,40 @@ window.setBuzzInactive = ()=>{ buzzState.active = false; };
 window.buzzData = ()=>{ const it = BUZZ_QUESTIONS[buzzState.index]; return { correctIndex:it.correct, options:it.options }; };
 window.buzzQuestionText = ()=> BUZZ_QUESTIONS[buzzState.index].q;
 window.BUZZ_TIME = BUZZ_TIME;
+
+/* حفظ حالة اللعبة (للمنسق) لتصمد عبر الريفرش */
+window.saveHostState = function(){
+  try{
+    localStorage.setItem("rokando_host_state", JSON.stringify({
+      score, night, nightScore, boardState,
+      wheelResult:document.getElementById("wheelResult").textContent
+    }));
+  }catch(e){}
+};
+window.restoreHostState = function(){
+  try{
+    const s = JSON.parse(localStorage.getItem("rokando_host_state") || "null");
+    if(!s) return false;
+    score = s.score || { sakara:0, masateel:0 };
+    night = s.night || { on:false, round:0 };
+    nightScore = s.nightScore || { sakara:0, masateel:0 };
+    boardState = s.boardState || [];
+    document.getElementById("scoreSakara").textContent = score.sakara;
+    document.getElementById("scoreMasateel").textContent = score.masateel;
+    if(s.wheelResult) document.getElementById("wheelResult").textContent = s.wheelResult;
+    document.getElementById("nightNextBtn").textContent = night.on ? "الجولة الجاية ←" : "ابدأ الجولة الأولى";
+    document.getElementById("nightNextBtn").style.display = night.on && night.round >= NIGHT_ROUNDS.length ? "none" : "inline-block";
+    refreshNightChips();
+    currentWidget();
+    updateNightTotal();
+    if(night.on) document.getElementById("nightStatus").textContent = `الجولة ${night.round+1}: ${NIGHT_ROUNDS[night.round].name}`;
+    document.querySelectorAll(".quiz-cell").forEach(cell=>{
+      const ci = +cell.dataset.c, li = +cell.dataset.l;
+      if(boardState[ci] && boardState[ci][li] === false) cell.classList.add("used");
+    });
+    return true;
+  }catch(e){ return false; }
+};
+window.clearHostState = function(){
+  try{ localStorage.removeItem("rokando_host_state"); }catch(e){}
+};
