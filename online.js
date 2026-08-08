@@ -1,7 +1,7 @@
 ﻿/* ====== Ù„ÙŠØ§Ù„ÙŠ Ø±ÙˆÙ‚Ø§Ù†Ø¯Ùˆ â€” Ø§Ù„Ø·Ø¨Ù‚Ø© Ø§Ù„Ø£ÙˆÙ†Ù„Ø§ÙŠÙ† (Ably) ======
    Ø¶Ø¹ Ù…ÙØªØ§Ø­ Ably Ù‡Ù†Ø§ Ù…Ù† https://ably.com â†’ Apps â†’ API Keys.
    ÙŠÙÙ†ØµØ­ Ø¨ØªÙ‚ÙŠÙŠØ¯ Ø§Ù„Ù…ÙØªØ§Ø­ (Capabilities) Ø¹Ù„Ù‰ Publish + Subscribe ÙÙ‚Ø·. */
-const ABLY_KEY = "PASTE_YOUR_ABLY_KEY_HERE";
+const ABLY_KEY = "WEHAHQ.bruQUA:vAIAvC_vW30OpzTdVNjArNMSC1zTTjdvdtvmw52o-10";
 const ROOM_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ";
 
 window.online = (function(){
