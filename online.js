@@ -230,12 +230,19 @@ window.online = (function(){
   }
   function publishInit(){
     const n = window.getNight();
+    let quiz = null;
+    const cq = (window.currentQuiz && window.quizBusy()) ? window.currentQuiz() : null;
+    const dl = window.getQuizDeadline ? window.getQuizDeadline() : null;
+    if(cq && dl && dl > Date.now()){
+      quiz = { action:"ask", qid:cq.qid, value:cq.value, catName:cq.catName || "", question:cq.q, options:cq.options, correct:cq.correct, team:cq.team || "sakara", time:window.QUIZ_TIME, deadline:dl };
+    }
     publish({
       type:"init",
       night:{ on:n.on, round:n.round, roundName:window.getRoundName(n.round) },
       scores:{ sakara:+$("scoreSakara").textContent, masateel:+$("scoreMasateel").textContent },
       wheel:$("wheelResult").textContent,
-      players:Object.values(players)
+      players:Object.values(players),
+      quiz
     });
   }
 
@@ -266,6 +273,7 @@ window.online = (function(){
     if(!item || item.qid !== msg.qid) return;
     window.clearQuizTimer();
     const correct = msg.index === item.correct;
+    if(correct && window.playCorrectSound) window.playCorrectSound();
     const gained = correct ? msg.value : -Math.floor(msg.value/2);
     addPoints(msg.team, gained);
     const btns = document.querySelectorAll(".quiz-answer");
@@ -299,6 +307,7 @@ window.online = (function(){
     window.setBuzzInactive();
     const { correctIndex, options } = window.buzzData();
     const correct = msg.index === correctIndex;
+    if(correct && window.playCorrectSound) window.playCorrectSound();
     const gained = correct ? 20 : -10;
     addPoints(msg.team, gained);
     const btns = document.querySelectorAll(".buzz-opt");
@@ -379,6 +388,7 @@ window.online = (function(){
         applyNight(msg.night);
         applyScore(msg.scores);
         if(msg.wheel) applyWheel(msg.wheel);
+        if(msg.quiz) applyQuiz(msg.quiz);
         break;
       case "night": applyNight(msg); break;
       case "score": applyScore(msg); break;
@@ -417,20 +427,22 @@ window.online = (function(){
     if(quizCountP){ clearInterval(quizCountP); quizCountP = null; }
     quizStateP = null;
     if(msg.action === "ask"){
-      quizStateP = { qid:msg.qid, correct:msg.correct, value:msg.value, team:msg.team, question:msg.question, options:msg.options, answered:false };
+      const time = msg.time || window.QUIZ_TIME || 20;
+      const deadline = msg.deadline || (Date.now() + time*1000);
+      const left0 = Math.max(0, Math.ceil((deadline - Date.now())/1000));
+      quizStateP = { qid:msg.qid, correct:msg.correct, value:msg.value, team:msg.team, question:msg.question, options:msg.options, answered:false, deadline };
       if(msg.team === team){
         area.innerHTML = pgBox(`
-          <div class="pg-timer" id="pgTimer">${msg.time}</div>
+          <div class="pg-timer" id="pgTimer">${left0}</div>
           <div class="pg-q">${msg.question}</div>
           ${msg.options.map((o,i)=>`<button class="pg-opt" onclick="online.answerQ(${i})">${o}</button>`).join("")}
-          <div class="pg-note">أنت تجيب الآن... أمامك ${msg.time} ثانية</div>`);
-        let left = msg.time;
+          <div class="pg-note">أنت تجيب الآن... أمامك ${time} ثانية</div>`);
         quizCountP = setInterval(()=>{
-          left--;
+          const left = Math.max(0, Math.ceil((deadline - Date.now())/1000));
           const el = $("pgTimer");
           if(el){ el.textContent = left; el.classList.toggle("danger", left<=5); }
           if(left<=0){ clearInterval(quizCountP); quizCountP = null; }
-        },1000);
+        },250);
       }else{
         area.innerHTML = pgBox(`<div class="pg-q">سؤال لفريق ${teamName(msg.team)}...</div><div class="pg-note">ترقب النتيجة</div>`);
       }

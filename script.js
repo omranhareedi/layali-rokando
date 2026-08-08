@@ -488,6 +488,7 @@ let cellLast = [];
 let boardTimer = null;
 let quizTeam = "sakara";
 let currentQuiz = null;   /* السؤال الحالي (عشوائي) — يستخدمه المنسق والموبايل */
+let quizDeadline = null;  /* اللحظة المطلقة (ms) التي ينتهي عندها مؤقت السؤال — تشترك بها كل الأجهزة */
 
 /* سحب عشوائي لسؤال من بنك الفئة والمستوى مع تفادي تكرار نفس السؤال مرتين متتاليتين */
 function pickQuizItem(ci, li){
@@ -524,8 +525,14 @@ function pickCell(ci,li){
   if(boardTimer) return;
   const item = pickQuizItem(ci, li);
   if(!item) return;
-  currentQuiz = item;
   const value = (li+1)*10;
+  currentQuiz = { q:item.q, options:item.options, correct:item.correct, qid:item.qid, value, open:true, catName:QUIZ_CATEGORIES[ci].name };
+  renderQuiz(currentQuiz);
+}
+
+function renderQuiz(item, deadline){
+  const value = item.value;
+  item.team = item.team || quizTeam;
   const teamName = quizTeam==="sakara" ? "السكارى" : "المساطيل";
   const onlineOn = window.onlineHost && window.onlineHost.connected;
   document.getElementById("quizQuestion").textContent = item.q;
@@ -534,36 +541,37 @@ function pickCell(ci,li){
       ? `<button class="quiz-answer" data-i="${i}" disabled>${o}</button>`
       : `<button class="quiz-answer" data-i="${i}" onclick="answerBoard(${i},${value})">${o}</button>`
   ).join("");
+  const catLabel = item.catName || "";
   document.getElementById("quizFeedback").textContent = onlineOn
-    ? `${QUIZ_CATEGORIES[ci].name} — ${value} نقطة — سؤال لفريق ${teamName}... بانتظار إجابة الموبايل`
-    : `${QUIZ_CATEGORIES[ci].name} — ${value} نقطة — فريق ${teamName} أمامك ${QUIZ_TIME} ثانية!`;
-  startTimer(value);
-  if(onlineOn) window.onlineHost.publishQuiz({action:"ask", qid:item.qid, value, catName:QUIZ_CATEGORIES[ci].name, question:item.q, options:item.options, correct:item.correct, team:quizTeam, time:QUIZ_TIME});
+    ? `${catLabel} — ${value} نقطة — سؤال لفريق ${teamName}... بانتظار إجابة الموبايل`
+    : `${catLabel} — ${value} نقطة — فريق ${teamName} أمامك ${QUIZ_TIME} ثانية!`;
+  if(!deadline) deadline = Date.now() + QUIZ_TIME*1000;
+  quizDeadline = deadline;
+  startTimer(value, deadline);
+  if(onlineOn) window.onlineHost.publishQuiz({action:"ask", qid:item.qid, value, catName:catLabel, question:item.q, options:item.options, correct:item.correct, team:quizTeam, time:QUIZ_TIME, deadline});
 }
 
-function startTimer(value){
-  let left = QUIZ_TIME;
+function startTimer(value, deadline){
   const bar = document.getElementById("quizTimerBar");
   const num = document.getElementById("quizTimerNum");
   document.querySelectorAll(".team-pick").forEach(b=>b.classList.add("lock"));
-  bar.classList.remove("danger");
-  num.classList.remove("danger");
   bar.style.transition = "none";
-  bar.style.width = "100%";
-  num.textContent = left;
-  requestAnimationFrame(()=>{
-    bar.style.transition = `width ${QUIZ_TIME}s linear`;
-    bar.style.width = "0%";
-  });
-  boardTimer = setInterval(()=>{
-    left--;
+  num.classList.remove("danger");
+  const update = ()=>{
+    const left = Math.max(0, Math.ceil((deadline - Date.now())/1000));
     num.textContent = left;
-    if(left<=5){ bar.classList.add("danger"); num.classList.add("danger"); }
-    if(left<=0){
+    bar.style.width = (left/QUIZ_TIME*100) + "%";
+    bar.classList.toggle("danger", left<=5);
+    return left;
+  };
+  update();
+  if(deadline - Date.now() <= 0){ timeUp(); return; }
+  boardTimer = setInterval(()=>{
+    if(update() <= 0){
       clearInterval(boardTimer); boardTimer = null;
       timeUp();
     }
-  },1000);
+  },200);
 }
 
 function timeUp(){
@@ -572,12 +580,14 @@ function timeUp(){
   document.getElementById("quizTimerBar").classList.remove("danger");
   document.getElementById("quizTimerNum").classList.remove("danger");
   document.getElementById("quizFeedback").textContent = "انتهى الوقت! صفر نقطة.";
+  quizDeadline = null;
   if(window.onlineHost && window.onlineHost.connected) window.onlineHost.publishQuiz({action:"timeup"});
 }
 
 function answerBoard(i,value){
   if(!boardTimer) return;
   clearInterval(boardTimer); boardTimer = null;
+  quizDeadline = null;
   document.querySelectorAll(".team-pick").forEach(b=>b.classList.remove("lock"));
   document.getElementById("quizTimerBar").classList.remove("danger");
   document.getElementById("quizTimerNum").classList.remove("danger");
@@ -587,6 +597,7 @@ function answerBoard(i,value){
   if(i===item.correct){
     btns[i].classList.add("correct");
     addPoints(quizTeam, value);
+    playCorrectSound();
     document.getElementById("quizFeedback").textContent = `إجابة صحيحة! +${value} لفريق ${quizTeam==="sakara" ? "السكارى" : "المساطيل"}.`;
   }else{
     btns[i].classList.add("wrong");
@@ -605,6 +616,7 @@ function evalQuiz(ci,li,i,value){
 
 function resetBoard(){
   if(boardTimer){ clearInterval(boardTimer); boardTimer = null; }
+  quizDeadline = null;
   document.querySelectorAll(".team-pick").forEach(b=>b.classList.remove("lock"));
   document.getElementById("quizTimerBar").classList.remove("danger");
   document.getElementById("quizTimerNum").classList.remove("danger");
@@ -811,6 +823,7 @@ function buzzAnswer(i){
   if(i === item.correct){
     btns[i].classList.add("correct");
     addPoints(buzzState.turn, 20);
+    playCorrectSound();
     document.getElementById("buzzFeedback").textContent = "إجابة صحيحة! +20 نقطة لفريق " + (buzzState.turn==="sakara" ? "السكارى" : "المساطيل");
   }else{
     btns[i].classList.add("wrong");
@@ -881,8 +894,10 @@ pickWheelTeam("sakara");
 window.getNight = ()=>({on:night.on, round:night.round});
 window.getRoundName = (i)=> i>=0 && i<NIGHT_ROUNDS.length ? NIGHT_ROUNDS[i].name : "الختام الكبير";
 window.quizBusy = ()=> !!boardTimer;
-window.clearQuizTimer = ()=>{ if(boardTimer){ clearInterval(boardTimer); boardTimer = null; } };
+window.clearQuizTimer = ()=>{ if(boardTimer){ clearInterval(boardTimer); boardTimer = null; } quizDeadline = null; };
 window.currentQuiz = ()=> currentQuiz;
+window.getQuizDeadline = ()=> quizDeadline;
+window.playCorrectSound = playCorrectSound;
 window.QUIZ_TIME = QUIZ_TIME;
 window.getBuzzState = ()=>({active:buzzState.active, turn:buzzState.turn, index:buzzState.index});
 window.setBuzzTurn = (t)=>{ buzzState.turn = t; };
@@ -897,7 +912,8 @@ window.saveHostState = function(){
   try{
     localStorage.setItem("rokando_host_state", JSON.stringify({
       score, night, nightScore,
-      wheelResult:document.getElementById("wheelResult").textContent
+      wheelResult:document.getElementById("wheelResult").textContent,
+      quizDeadline, currentQuiz
     }));
   }catch(e){}
 };
@@ -917,9 +933,64 @@ window.restoreHostState = function(){
     currentWidget();
     updateNightTotal();
     if(night.on) document.getElementById("nightStatus").textContent = `الجولة ${night.round+1}: ${NIGHT_ROUNDS[night.round].name}`;
+    /* استئناف سؤال جارٍ: إن لم ينتهِ وقته نعيد عرضه ببقية الوقت */
+    const dl = s.quizDeadline, cq = s.currentQuiz;
+    if(dl && cq && cq.open && dl > Date.now()){
+      currentQuiz = cq;
+      quizDeadline = dl;
+      if(cq.team) quizTeam = cq.team;
+      document.querySelectorAll(".team-pick").forEach(b=>b.classList.remove("active"));
+      const sel = document.querySelector(cq.team==="sakara" ? ".pick-sakara" : ".pick-masateel");
+      if(sel) sel.classList.add("active");
+      renderQuiz(cq, dl);
+    }
     return true;
   }catch(e){ return false; }
 };
 window.clearHostState = function(){
   try{ localStorage.removeItem("rokando_host_state"); }catch(e){}
 };
+
+/* ---------- مشغل الأغنية ---------- */
+const MUSIC_URL = "music/ya-zahia.m4a";   /* يا زاهية — طه سليمان (من يوتيوب) */
+const bgMusic = document.getElementById("bgMusic");
+let musicOn = false;
+if(MUSIC_URL) bgMusic.src = MUSIC_URL;
+
+/* صافرة الفوز: Not Like Us — تِشغل لما حد يجاوب صح */
+const NOT_LIKE_US_URL = "music/not-like-us.m4a";   /* Not Like Us — كيندريك لامار (من يوتيوب) */
+const sfxCorrect = document.getElementById("sfxCorrect");
+if(NOT_LIKE_US_URL) sfxCorrect.src = NOT_LIKE_US_URL;
+let musicWasOn = false;
+function playCorrectSound(){
+  if(!NOT_LIKE_US_URL) return;
+  try{
+    if(musicOn){ bgMusic.pause(); musicWasOn = true; }
+    sfxCorrect.currentTime = 0;
+    sfxCorrect.play().then(()=>{
+      sfxCorrect.onended = ()=>{
+        if(musicWasOn){
+          musicWasOn = false;
+          bgMusic.play().then(()=>{ musicOn = true; }).catch(()=>{});
+        }
+      };
+    }).catch(()=>{});
+  }catch(e){}
+}
+
+function toggleMusic(){
+  const btn = document.getElementById("musicBtn");
+  if(!MUSIC_URL){
+    btn.title = "لم يُضف رابط الأغنية بعد — افتح script.js واكتبه في MUSIC_URL";
+    btn.classList.add("no-src");
+    setTimeout(()=>btn.classList.remove("no-src"), 1500);
+    return;
+  }
+  if(musicOn){
+    bgMusic.pause();
+    musicOn = false;
+  }else{
+    bgMusic.play().then(()=>{ musicOn = true; }).catch(()=>{});
+  }
+  document.body.classList.toggle("music-playing", musicOn);
+}
